@@ -2,7 +2,7 @@ There are various libraries used for data extraction, manipulation and visulatio
 
 # Load neccessary R Libraries
 
-#Libraries + Environment
+# Libraries + Environment
 
 library(tidycensus)
 library(tidyr)
