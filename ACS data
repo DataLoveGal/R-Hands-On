@@ -1,0 +1,106 @@
+There are various libraries used for data extraction, manipulation and visulation. Below are a few that may be useful.
+
+# Load neccessary R Libraries
+
+#Libraries + Environment
+
+library(tidycensus)
+library(tidyr)
+library(gtools)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(formattable)
+library(cowplot)
+library(grid)
+library(gridExtra)
+library(ggsci)
+
+
+
+
+
+##Options & apply census api key##
+
+options(scipen=999)
+options(maxprint=9999)
+options(tigris_use_cache = TRUE)
+#census_api_key(key="352c8965c16a4c6a816bed805d3b8470d213bb37 ", install=TRUE)
+
+#Get ACS Macro
+
+get_acs_small<-defmacro(var1,var2,
+                        
+                        expr= {
+                          
+                          data<-get_acs(geography = "county", 
+                                        variables = c("B23025_005E", "B23025_004E"), #pull multiple variables
+                                        output = "wide", # can change the output of the data so it's wide
+                                        state = var1, 
+                                        year = 2019, # change year for different survey years
+                                        survey = "acs1") #change survey for acs1 or acs5
+                          
+                          var2<-data.frame(data)
+                          colnames(var2)<-c("geoid","county","EST_Total_LF_UEMP","MOE_Total_LF_UEMP", "EST_Total_LF_EMP","MOE_Total_LF_EMP")
+                          
+                          
+                        })
+
+get_acs_small("FL", data_fl1)
+get_acs_small("TX", data_tx1)
+get_acs_small("NM", data_nm1)
+
+#View Data Texas and NM#
+
+
+View(data_tx1)
+View(data_nm1)
+
+#Summary Texas#
+
+summary(data_tx1)
+tx_discriptives<-data.frame(summary(data_tx1))
+tx_estimates1<-tx_discriptives[13:18,]
+tx_estimates2<-tx_discriptives[25:30,]
+
+tx_estimates<-data.frame(rbind(tx_estimates1, tx_estimates2))
+
+# Summary New Mexico 
+summary(data_nm1)
+nm_discriptives<-data.frame(summary(data_nm1))
+nm_estimates1<-nm_discriptives[13:18,]
+nm_estimates2<-nm_discriptives[25:30,]
+
+nm_estimates<-data.frame(rbind(nm_estimates1, nm_estimates2))
+
+## Histogram Texas
+
+h1<-ggplot(data_tx1, aes(x=EST_Total_LF_UEMP))+
+  geom_density(adjust=2, alpha = .5)+
+  ggtitle("Histogram Texas County Labor Force: Unemployed")+
+  theme(plot.title = element_text(hjust=.5,size=12))+
+  theme(legend.title = element_blank())+
+  theme(axis.text=element_text(size=8))+ylab("Frequency")+
+  theme(axis.text=element_text(size=10))
+h1
+
+
+h1<-ggplot(data_tx1, aes(x=EST_Total_LF_EMP))+
+  geom_density(adjust=2, alpha = .5)+
+  ggtitle("Histogram Texas County Labor Force: Employed")+
+  theme(plot.title = element_text(hjust=.5,size=12))+
+  theme(legend.title = element_blank())+
+  theme(axis.text=element_text(size=8))+ylab("Frequency")+
+  theme(axis.text=element_text(size=10))
+h1
+
+## Histogram NM
+
+h1<-ggplot(data_nm1, aes(x=EST_Total_LF_UEMP))+
+  geom_density(adjust=2, alpha = .5)+
+  ggtitle("Histogram New Mexico County Labor Force: Unemployed")+
+  theme(plot.title = element_text(hjust=.5,size=12))+
+  theme(legend.title = element_blank())+
+  theme(axis.text=element_text(size=8))+ylab("Frequency")+
+  theme(axis.text=element_text(size=10))
+h1
