@@ -1,0 +1,65 @@
+## This file contains my selected variables and some brief data processing and visualization
+
+# Loading and inspecting Data
+file_path <- **Copied and pasted my file path name here**
+datahisto <- read_csv(file_path)
+
+head(datahisto)
+View(datahisto)
+str(datahisto)
+str(datahisto, list.len=ncol(datahisto))
+dim(datahisto)
+
+# Creating Histograms
+h1 <- ggplot(datahisto, aes(x=total_pop)) +
+  geom_histogram(binwidth=1000, alpha=0.7, fill="purple", color="white") +
+  ggtitle("Histogram of Population") +
+  theme(plot.title = element_text(hjust=.5, size=12)) +
+  theme(legend.title = element_blank()) +
+  theme(axis.text=element_text(size=8)) + ylab("Frequency") +
+  theme(axis.text=element_text(size=10))
+h1
+
+# Stacked histogram
+ ### Bachelor's Degree vs. Median Household Income
+
+newdata_bach_income <- select(datahisto, bachelor_income)
+newdata_MedianHHI <- select(datahisto, median_hh_income)
+colnames(newdata_bach_income) <- c("count")
+colnames(newdata_MedianHHI) <- c("count")
+newdata_bach_income$group <- "bachelor_income"
+newdata_MedianHHI$group <- "median_hh_income"
+plot_data2 <- data.frame(rbind(newdata_MedianHHI, newdata_bach_income))
+
+h10 <- ggplot(plot_data2, aes(x=count, group=group, fill=group)) +
+  geom_density(adjust=2, alpha = 1) +
+  scale_fill_manual(values = c("darkblue", "darkred")) +
+  ggtitle("Geometric Density Income Histogram:  Median Household Vs Bachelor's") +
+  theme(plot.title = element_text(hjust=.5, size=12)) +
+  theme(legend.title = element_blank()) +
+  theme(axis.text=element_text(size=8)) + ylab("Frequency") +
+  theme(axis.text=element_text(size=10))
+h10
+
+# Bar Chart: Owner-occupied vs Renter-occupied Housing
+bar_chart_housing <- ggplot(data, aes(x=tenure)) +
+  geom_bar(fill="coral") +
+  ggtitle("Owner-occupied vs Renter-occupied Housing") +
+  xlab("Tenure") +
+  ylab("Count") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust=0.5))
+
+View(bar_chart_housing)
+
+# Scatter Plot: Median Household Income vs Total Population
+scatter_plot_income_pop <- ggplot(data, aes(x=total_pop, y=median_hh_income)) +
+  geom_point(color="darkgreen") +
+  ggtitle("Median Household Income vs Total Population") +
+  xlab("Total Population") +
+  ylab("Median Household Income") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust=0.5))
+
+View(scatter_plot_income_pop)
+** I will add more in the coming days plus the visuals
